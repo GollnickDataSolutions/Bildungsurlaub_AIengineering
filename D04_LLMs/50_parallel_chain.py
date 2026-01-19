@@ -2,7 +2,7 @@
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableParallel
+from langchain_core.runnables import RunnableParallel, graph_mermaid
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 load_dotenv('.env')
@@ -35,7 +35,7 @@ map_chain = RunnableParallel(
 )
 
 # %% Invoke
-topic = "What is the meaning of life?"
+topic = "Was ist der Sinn des Lebens?"
 result = map_chain.invoke({"topic": topic})
 # %% Print
 from pprint import pprint
