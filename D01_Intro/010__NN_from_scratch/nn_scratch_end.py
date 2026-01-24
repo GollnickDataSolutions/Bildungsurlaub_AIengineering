@@ -8,10 +8,15 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
+
 #%% data prep
 # source: https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset
 df = pd.read_csv('heart.csv')
 df.head()
+
+#%%
+from collections import Counter
+Counter(df['output'])
 
 #%% separate independent / dependent features
 X = np.array(df.drop(columns=['output']))

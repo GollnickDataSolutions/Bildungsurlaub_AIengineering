@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "autogluon-tabular[mitra]>=1.5.0",
     "groq>=0.19.0",
     "ipykernel>=6.29.5",
     "jupyter>=1.1.1",
@@ -15,6 +16,7 @@ dependencies = [
     "langchain-openai>=0.3.8",
     "matplotlib>=3.10.1",
     "onnx>=1.20.0",
+    "onnxscript>=0.5.7",
     "pyperclip>=1.9.0",
     "python-dotenv>=1.0.1",
     "pytorch-lightning>=2.5.0.post0",
@@ -30,15 +32,16 @@ dependencies = [
     "transformers>=4.49.0",
     "ucimlrepo>=0.0.7",
     "ultralytics>=8.3.94",
+    "wikipedia>=1.4.0",
 ]
 # Neu: Custom Index für CUDA 12.4 definieren (uv-Docs-Style)
-[[tool.uv.index]]
-name = "pytorch-cu124"
-url = "https://download.pytorch.org/whl/cu124"
-explicit = true  # Nur für spezifische Pakete, nicht global
+# [[tool.uv.index]]
+# name = "pytorch-cu124"
+# url = "https://download.pytorch.org/whl/cu124"
+# explicit = true  # Nur für spezifische Pakete, nicht global
  
-# Neu: Pakete auf CUDA-Index umleiten
-[tool.uv.sources]
-torch = [{ index = "pytorch-cu124" }]
-torchvision = [{ index = "pytorch-cu124" }]
-torchaudio = [{ index = "pytorch-cu124" }]
+# # Neu: Pakete auf CUDA-Index umleiten
+# [tool.uv.sources]
+# torch = [{ index = "pytorch-cu124" }]
+# torchvision = [{ index = "pytorch-cu124" }]
+# torchaudio = [{ index = "pytorch-cu124" }]

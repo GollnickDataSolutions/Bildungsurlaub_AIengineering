@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableParallel, graph_mermaid
 from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
-load_dotenv('.env')
+load_dotenv()
 
 #%% Model Instance
 # llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
@@ -41,3 +41,5 @@ result = map_chain.invoke({"topic": topic})
 from pprint import pprint
 pprint(result)
 # %%
+
+
