@@ -1,0 +1,3 @@
+input_size: 20
+output_size: 1
+learning_rate: 0.01
