@@ -23,6 +23,11 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuff
 testset = torchvision.datasets.ImageFolder(root='test', transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=True)
 
+#%% classes 
+CLASSES = trainset.classes
+print("Class names:", CLASSES)
+
+
 # %%
 CLASSES = ['affenpinscher', 'akita', 'corgi']
 NUM_CLASSES = len(CLASSES)
