@@ -1,11 +1,18 @@
 #%% Pakete
 import torch
 import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
 import numpy as np
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-# %%
+# %% Hyperparameter
+EPOCHS = 100
+BATCH_SIZE = 128
+LR = 0.001
+VAL_TEST_SIZE=1000
+
+#%%
 X, y = fetch_california_housing(as_frame=True, return_X_y=True)
 X.shape
 
@@ -16,10 +23,10 @@ X.describe()
 
 # %% data splitting
 # -> Ziel ist die Dreiteilung der Daten (train, validation, test)
-X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size=1000, random_state=42)
+X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size=VAL_TEST_SIZE, random_state=42)
 print(f"X_test shape: {X_test.shape}, y_test shape: {y_test.shape}")
 
-X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size=1000, random_state=42)
+X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size=VAL_TEST_SIZE, random_state=42)
 print(f"X_train shape: {X_train.shape}, y_train shape: {y_train.shape}")
 print(f"X_val shape: {X_val.shape}, y_val shape: {y_val.shape}")
 
@@ -37,6 +44,28 @@ X_test_scaled_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
 y_train_tensor = torch.tensor(np.array(y_train).reshape(-1, 1), dtype=torch.float32)
 y_val_tensor = torch.tensor(np.array(y_val).reshape(-1, 1), dtype=torch.float32)
 y_test_tensor = torch.tensor(np.array(y_test).reshape(-1, 1), dtype=torch.float32)
+
+#%% Dataset Klasse erstellen
+class RegressionDataset(Dataset):
+    def __init__(self, X, y):
+        self.X = X
+        self.y = y
+
+    def __len__(self):
+        return self.X.shape[0] # len(X)
+
+    def __getitem__(self, idx):
+        return self.X[idx], self.y[idx]
+
+train_dataset = RegressionDataset(X=X_train_scaled_tensor, y=y_train_tensor)
+val_dataset = RegressionDataset(X=X_val_scaled_tensor, y=y_val_tensor)
+test_dataset = RegressionDataset(X=X_test_scaled_tensor, y=y_test_tensor)
+
+#%% Dataloader
+train_loader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True)
+val_loader = DataLoader(dataset=val_dataset, batch_size=VAL_TEST_SIZE, shuffle=False)
+test_loader = DataLoader(dataset=test_dataset, batch_size=VAL_TEST_SIZE, shuffle=False)
+
 
 # %% Modellklasse erstellen
 class RegressionTorch(nn.Module):
@@ -68,8 +97,8 @@ class RegressionTorch(nn.Module):
    
 
 # %% Modellinstanz erstellen
-input_size = X_train_scaled_tensor.shape[1]
-output_size = y_train_tensor.shape[1]
+input_size = train_dataset.X.shape[1]
+output_size = train_dataset.y.shape[1]
 model = RegressionTorch(input_size=input_size, output_size=output_size)
 for name, param in model.named_parameters():
     print(f"Parameter '{name}':", param.data)
@@ -80,26 +109,23 @@ print(f"Total number of model parameters: {total_params}")
 loss_fun = nn.MSELoss()
 
 #%% Optimierer festlegen
-LR = 0.001
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 
 #%% Trainingsschleife
-EPOCHS = 300
-BATCH_SIZE = 128
 losses_train, losses_val = [], []
 for epoch in range(EPOCHS):
     loss_epoch = 0
-    for i in range(0, X_train_scaled.shape[0], BATCH_SIZE):
+    for i, (X_train_batch, y_train_batch) in enumerate(train_loader):
         model.train()
         # Gradienten nullen
         optimizer.zero_grad()
 
         # Forward Pass
-        y_train_pred = model(X_train_scaled_tensor[i:i+BATCH_SIZE])
+        y_train_batch_pred = model(X_train_batch)
 
         # Verluste berechnen
         # Ensure both tensors are float32 and have the same shape for the loss calculation
-        loss = loss_fun(y_train_pred, y_train_tensor[i:i+BATCH_SIZE])
+        loss = loss_fun(y_train_batch_pred, y_train_batch)
         loss_epoch += loss.item()
 
         # Backward Pass
@@ -109,17 +135,18 @@ for epoch in range(EPOCHS):
         optimizer.step()
 
     # Verluste speichern für spätere Visualisierung
-    losses_train.append(loss_epoch)
+    losses_train.append(loss_epoch/len(train_loader))
 
     print(f"Epoche {epoch}, Train-Verlust {loss}")
 
     # Validierung
     model.eval()
     with torch.no_grad():
-        y_val_pred = model(X_val_scaled_tensor)
-        loss_val = loss_fun(y_val_pred, y_val_tensor)
-        losses_val.append(loss_val.item())
-        print(f"Epoche {epoch}, Val-Verlust {loss_val}")
+        for j, (X_val_batch, y_val_batch) in enumerate(val_loader):
+            y_val_batch_pred = model(X_val_batch)
+            loss_val = loss_fun(y_val_batch_pred, y_val_batch)
+            losses_val.append(loss_val.item()/len(val_loader))
+            print(f"Epoche {epoch}, Val-Verlust {loss_val}")
 
 # %%
 import seaborn as sns
@@ -130,7 +157,10 @@ for name, param in model.named_parameters():
 # %% Modell final testen mit Testdaten
 model.eval()
 with torch.no_grad():
-    y_test_pred = model(X_test_scaled_tensor).numpy()
+    for (X_test, y_test) in test_loader:
+        y_test_pred = model(X_test).numpy()
+        y_test = y_test.numpy()
+        
     
     
 # %% Regressionsplot für echte Werte und Vorhersagen
@@ -145,3 +175,15 @@ r2_score(y_pred=y_test_pred.flatten(), y_true=y_test)
 # - Anzahl Epochen
 # - Verlustfunktion
 # - Optimierer
+
+
+#%% Save Model
+torch.save(obj=model.state_dict(),f="RegressionModel.pt")
+
+
+#%% Modellagnostischer Weg via ONNX
+# (BATCH_SIZE, 8)
+# (BATCH_SIZE, COLOR_CHANNELS, HOR_PIXEL, VERT_PIXEL)
+dummy_input = torch.randn(1, 8)
+torch.onnx.export(model=model, args=dummy_input, f="RegressionModel.onnx")
+# %%
