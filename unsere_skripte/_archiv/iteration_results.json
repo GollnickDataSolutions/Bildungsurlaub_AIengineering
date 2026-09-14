@@ -1,0 +1,116 @@
+{
+  "baseline": {
+    "r2": 0.9229,
+    "config": {
+      "EPOCHS": 100,
+      "BATCH_SIZE": 128,
+      "LR": 0.001,
+      "HIDDEN1": 50,
+      "HIDDEN2": 30,
+      "HIDDEN3": 30,
+      "HIDDEN4": 20,
+      "OPTIMIZER": "Adam",
+      "DROPOUT": 0.0,
+      "USE_BATCHNORM": false,
+      "LR_SCHEDULER": null,
+      "WEIGHT_DECAY": 0.0
+    }
+  },
+  "iter1_wider_network": {
+    "r2": 0.9397,
+    "desc": "Increase hidden layer sizes for more capacity",
+    "config": {
+      "EPOCHS": 100,
+      "BATCH_SIZE": 128,
+      "LR": 0.001,
+      "HIDDEN1": 128,
+      "HIDDEN2": 64,
+      "HIDDEN3": 32,
+      "HIDDEN4": 16,
+      "OPTIMIZER": "Adam",
+      "DROPOUT": 0.0,
+      "USE_BATCHNORM": false,
+      "LR_SCHEDULER": null,
+      "WEIGHT_DECAY": 0.0,
+      "desc": "Increase hidden layer sizes for more capacity"
+    }
+  },
+  "iter2_dropout": {
+    "r2": 0.8809,
+    "desc": "Add dropout + weight decay for regularization",
+    "config": {
+      "EPOCHS": 150,
+      "BATCH_SIZE": 128,
+      "LR": 0.001,
+      "HIDDEN1": 64,
+      "HIDDEN2": 32,
+      "HIDDEN3": 32,
+      "HIDDEN4": 16,
+      "OPTIMIZER": "Adam",
+      "DROPOUT": 0.2,
+      "USE_BATCHNORM": false,
+      "LR_SCHEDULER": null,
+      "WEIGHT_DECAY": 1e-05,
+      "desc": "Add dropout + weight decay for regularization"
+    }
+  },
+  "iter3_lr_scheduler": {
+    "r2": 0.9388,
+    "desc": "ReduceLROnPlateau scheduler for adaptive LR",
+    "config": {
+      "EPOCHS": 200,
+      "BATCH_SIZE": 64,
+      "LR": 0.01,
+      "HIDDEN1": 64,
+      "HIDDEN2": 32,
+      "HIDDEN3": 32,
+      "HIDDEN4": 16,
+      "OPTIMIZER": "Adam",
+      "DROPOUT": 0.1,
+      "USE_BATCHNORM": false,
+      "LR_SCHEDULER": "ReduceLROnPlateau",
+      "WEIGHT_DECAY": 1e-05,
+      "desc": "ReduceLROnPlateau scheduler for adaptive LR"
+    }
+  },
+  "iter4_deeper_bn": {
+    "r2": -3.6112,
+    "desc": "Deeper network (5 layers) + BatchNorm",
+    "config": {
+      "EPOCHS": 150,
+      "BATCH_SIZE": 128,
+      "LR": 0.001,
+      "HIDDEN1": 128,
+      "HIDDEN2": 64,
+      "HIDDEN3": 64,
+      "HIDDEN4": 32,
+      "HIDDEN5": 16,
+      "OPTIMIZER": "Adam",
+      "DROPOUT": 0.1,
+      "USE_BATCHNORM": true,
+      "LR_SCHEDULER": null,
+      "WEIGHT_DECAY": 1e-05,
+      "desc": "Deeper network (5 layers) + BatchNorm"
+    }
+  },
+  "iter5_sgd_momentum": {
+    "r2": null,
+    "desc": "SGD momentum + StepLR scheduler",
+    "config": {
+      "EPOCHS": 200,
+      "BATCH_SIZE": 64,
+      "LR": 0.01,
+      "HIDDEN1": 64,
+      "HIDDEN2": 32,
+      "HIDDEN3": 32,
+      "HIDDEN4": 16,
+      "OPTIMIZER": "SGD",
+      "MOMENTUM": 0.9,
+      "DROPOUT": 0.1,
+      "USE_BATCHNORM": false,
+      "LR_SCHEDULER": "StepLR",
+      "WEIGHT_DECAY": 0.0001,
+      "desc": "SGD momentum + StepLR scheduler"
+    }
+  }
+}

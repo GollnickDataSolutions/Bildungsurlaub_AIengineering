@@ -5,7 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 # %% check if audio backend is installed
 # before: pip install soundfile
-torchaudio.info
+
 
 # %% data import
 wav_file = 'data/set_a/extrahls__201101070953.wav'

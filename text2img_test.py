@@ -15,8 +15,8 @@ pipe = AutoPipelineForText2Image.from_pretrained(
 pipe.to("cuda")
 #%%
 image = pipe(
-    prompt="Ein Alpaka steht auf zwei Beinen und schaut in die Kamera, "
-           "weiches Studiolicht, fotorealistisch",
+    prompt="A cat is sitting on a chair, looking at the camera,"
+           "cyberpunk, comic style, high quality, 8k",
     num_inference_steps=1,
     guidance_scale=0.0,
     height=512, width=512,
