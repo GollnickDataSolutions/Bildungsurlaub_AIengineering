@@ -2,8 +2,10 @@
 uv.lock
 .env
 *.mp4
-# *.pt
+*.pt
 *.pyc
 scripts/
 scripts_BU/
 .venv/
+runs/
+runs/tensorboard/
