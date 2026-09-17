@@ -9,3 +9,7 @@ scripts_BU/
 .venv/
 runs/
 runs/tensorboard/
+mlflow.db
+mlruns/
+mlartifacts/
+model_summary.txt
