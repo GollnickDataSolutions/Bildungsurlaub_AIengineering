@@ -13,3 +13,5 @@ mlflow.db
 mlruns/
 mlartifacts/
 model_summary.txt
+wandb/
+wandb*
